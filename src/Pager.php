@@ -1,19 +1,14 @@
 <?php
 /**
  * @link      http://www.activemedia.uz/
- * @copyright Copyright (c) 2018. ActiveMedia Solutions LLC
+ * @copyright Copyright (c) 2019. ActiveMedia Solutions LLC
  * @author    Rustam Mamadaminov <rmamdaminov@gmail.com>
- */
-
-/**
- * Created by PhpStorm.
- * Date: 12/13/17
- * Time: 4:59 AM
  */
 
 namespace frontend\components;
 
 
+use yii\base\InvalidArgumentException;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\LinkPager;
@@ -30,10 +25,10 @@ class Pager extends LinkPager
     {
         parent::init();
         if (empty($this->buttonText)) {
-            $this->buttonText = __('View more');
+            throw new InvalidArgumentException();
         }
         if (empty($this->emptyText)) {
-            $this->emptyText = __('All data loaded');
+            throw new InvalidArgumentException();
         }
         if (empty($this->perLoad)) {
             $this->perLoad = 4;
@@ -53,7 +48,7 @@ class Pager extends LinkPager
             return '';// Html::a($this->emptyText, '#', ['class' => 'btn primary wide']);
         }
 
-        $buttons     = [];
+        $buttons = [];
         $currentPage = $this->pagination->getPage();
 
         // first page
