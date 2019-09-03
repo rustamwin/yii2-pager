@@ -1,0 +1,35 @@
+{
+    "name": "rustamwin/yii2-pager",
+    "description": "Link pager extension for the Yii framework",
+    "keywords": [
+        "yii2",
+        "pager",
+        "pagination"
+    ],
+    "type": "yii2-extension",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/rustamwin/yii2-pager/issues",
+        "source": "https://github.com/rustamwin/yii2-pager"
+    },
+    "authors": [
+        {
+            "name": "Rustam Mamadaminov",
+            "email": "rmamdaminov@gmail.com"
+        }
+    ],
+    "require": {
+        "yiisoft/yii2": "~2.0.13"
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "rustamwin\\pager\\": "src"
+        }
+    }
+}
