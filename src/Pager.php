@@ -8,30 +8,39 @@
 namespace frontend\components;
 
 
-use yii\base\InvalidArgumentException;
+use yii\base\InvalidConfigException;
+use yii\base\Widget;
+use yii\data\Pagination;
 use yii\helpers\Html;
 use yii\helpers\Url;
-use yii\widgets\LinkPager;
 
-class Pager extends LinkPager
+class Pager extends Widget
 {
-
+    /**
+     * @var Pagination
+     */
+    public $pagination;
     public $buttonText;
     public $emptyText;
     public $perLoad;
     public $loadParam = 'load';
+    public $options = [];
+    public $hideOnSinglePage = true;
 
     public function init()
     {
         parent::init();
+        if ($this->pagination === null) {
+            throw new InvalidConfigException('The "pagination" property must be set.');
+        }
         if (empty($this->buttonText)) {
-            throw new InvalidArgumentException();
+            throw new InvalidConfigException('The "buttonText" property must be set.');
         }
         if (empty($this->emptyText)) {
-            throw new InvalidArgumentException();
+            throw new InvalidConfigException('The "emptyText" property must be set.');
         }
         if (empty($this->perLoad)) {
-            $this->perLoad = 4;
+            $this->perLoad = $this->pagination->getPageSize();
         }
         Html::removeCssClass($this->options, 'pagination');
         Html::addCssClass($this->options, 'btn-small');
@@ -45,47 +54,12 @@ class Pager extends LinkPager
     {
         $pageCount = $this->pagination->getPageCount();
         if ($pageCount < 2 && $this->hideOnSinglePage) {
-            return '';// Html::a($this->emptyText, '#', ['class' => 'btn primary wide']);
+            return '';
         }
 
-        $buttons = [];
-        $currentPage = $this->pagination->getPage();
-
-        // first page
-        $firstPageLabel = $this->firstPageLabel === true ? '1' : $this->firstPageLabel;
-        if ($firstPageLabel !== false) {
-            $buttons[] = $this->renderPageButton($firstPageLabel, 0, $this->firstPageCssClass, $currentPage <= 0, false);
-        }
-
-        // prev page
-        if ($this->prevPageLabel !== false) {
-            if (($page = $currentPage - 1) < 0) {
-                $page = 0;
-            }
-            $buttons[] = $this->renderPageButton($this->prevPageLabel, $page, $this->prevPageCssClass, $currentPage <= 0, false);
-        }
-
-        // internal pages
-        list($beginPage, $endPage) = $this->getPageRange();
-        for ($i = $beginPage; $i <= $endPage; ++$i) {
-            $buttons[] = $this->renderPageButton($i + 1, $i, null, $this->disableCurrentPageButton && $i == $currentPage, $i == $currentPage);
-        }
-
-        // next page
-        if ($this->nextPageLabel !== false) {
-            if (($page = $currentPage + 1) >= $pageCount - 1) {
-                $page = $pageCount - 1;
-            }
-            $buttons[] = $this->renderPageButton($this->nextPageLabel, $page, $this->nextPageCssClass, $currentPage >= $pageCount - 1, false);
-        }
-
-        // last page
-        $lastPageLabel = $this->lastPageLabel === true ? $pageCount : $this->lastPageLabel;
-        if ($lastPageLabel !== false) {
-            $buttons[] = $this->renderPageButton($lastPageLabel, $pageCount - 1, $this->lastPageCssClass, $currentPage >= $pageCount - 1, false);
-        }
+        $page = $this->perLoad + $this->pagination->getPageSize();
         $options = $this->options;
-        return Html::a($this->buttonText, Url::current([$this->loadParam => $this->perLoad + $this->pagination->getPageSize()]), $options);
+        return Html::a($this->buttonText, Url::current([$this->loadParam => $page]), $options);
     }
 
 
